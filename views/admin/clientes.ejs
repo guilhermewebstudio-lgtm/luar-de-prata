@@ -1,0 +1,19 @@
+<%- include('_head') %>
+<main class="wrap page">
+  <div class="page-head"><h1>Clientes</h1><span class="muted"><%= users.length %> conta<%= users.length === 1 ? '' : 's' %></span></div>
+  <% if (!users.length) { %>
+    <div class="card empty">Ainda ninguém criou conta no site.</div>
+  <% } else { %>
+  <div class="card table" style="overflow:auto">
+    <table class="plain">
+      <thead><tr><th>Nome</th><th>Email</th><th>Telemóvel</th><th>Encomendas</th><th>Desde</th></tr></thead>
+      <tbody>
+        <% users.forEach(function (u) { %>
+        <tr><td><%= u.name %></td><td><a href="mailto:<%= u.email %>"><%= u.email %></a></td><td><%= u.phone || '—' %></td><td><%= u.orders %></td><td><%= u.created_fmt %></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+</main>
+</body></html>

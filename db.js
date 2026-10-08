@@ -79,6 +79,15 @@ async function init() {
       status TEXT NOT NULL DEFAULT 'nova',
       created_at TIMESTAMPTZ DEFAULT now()
     );
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      phone TEXT NOT NULL DEFAULT '',
+      password_hash TEXT NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT now()
+    );
+    ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id) ON DELETE SET NULL;
     CREATE TABLE IF NOT EXISTS "session" (
       "sid" varchar NOT NULL COLLATE "default",
       "sess" json NOT NULL,

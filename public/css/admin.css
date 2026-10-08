@@ -101,3 +101,7 @@ label.check { display: flex; align-items: center; margin-top: 26px; white-space:
   .c-act { grid-column: 1 / -1; }
   .del { position: absolute; top: 8px; right: 6px; }
 }
+
+table.plain { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.plain th, table.plain td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+table.plain th { background: #faf7f0; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }

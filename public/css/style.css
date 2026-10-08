@@ -374,14 +374,35 @@ html:not(.js) .reveal { opacity: 1; transform: none; }
   .reveal { opacity: 1; transform: none; }
 }
 
-/* Facebook */
-.nav a.fb-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 38px; height: 38px; padding: 0; margin-left: 10px; border-radius: 50%; background: #1877f2; color: #fff; font-family: inherit; font-size: .95rem; font-weight: 700; flex: none; transition: transform .2s, background .2s; }
-.nav a.fb-btn:hover { background: #0f63d1; color: #fff; transform: translateY(-2px); }
-.fb-btn .ico { width: 18px; height: 18px; flex: none; }
-.fb-label { display: none; }
+/* Facebook flutuante (por cima do WhatsApp) */
+.fb-fab { position: fixed; right: 20px; bottom: 88px; z-index: 60; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; background: #1877f2; color: #fff; text-decoration: none; box-shadow: 0 10px 26px rgba(24, 119, 242, .5); animation: fbFloat 3.4s ease-in-out infinite; }
+.fb-fab::before, .fb-fab::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(24, 119, 242, .55); animation: fbRing 2.6s ease-out infinite; pointer-events: none; }
+.fb-fab::after { animation-delay: 1.3s; }
+.fb-fab .ico { width: 26px; height: 26px; transition: transform .3s; }
+.fb-fab:hover { background: #0f63d1; }
+.fb-fab:hover .ico { transform: rotate(-12deg) scale(1.15); }
+@keyframes fbFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes fbRing { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(1.7); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .fb-fab, .fb-fab::before, .fb-fab::after { animation: none; } }
+@media (max-width: 560px) { .fb-fab { width: 48px; height: 48px; right: 22px; bottom: 84px; } }
+
 .foot-fb { display: inline-flex; align-items: center; gap: 8px; }
 .foot-fb .ico { width: 16px; height: 16px; flex: none; color: #6aa5ff; }
-@media (max-width: 820px) {
-  .nav a.fb-btn { width: auto; height: auto; border-radius: 999px; padding: 11px 22px; margin: 14px 0 0; font-size: .95rem; }
-  .fb-label { display: inline; }
-}
+
+/* Conta / login */
+.nav a.nav-account { display: inline-flex; align-items: center; gap: 7px; margin-left: 6px; border: 1.5px solid rgba(255, 255, 255, .28); }
+.nav a.nav-account:hover { border-color: var(--gold-l); }
+.auth-wrap { max-width: 480px; }
+.notice-ok { background: #e6f6ec; border: 1px solid #b7e4c7; color: #17653a; padding: 12px 18px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; }
+.acc-card { display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap; background: #fff; border: 1px solid #eee6d3; border-radius: 18px; padding: 22px 26px; box-shadow: var(--shadow); margin-bottom: 34px; }
+.acc-card .muted { color: var(--muted); font-size: .92rem; }
+.acc-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.acc-actions form { margin: 0; }
+.my-orders { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.my-order { background: #fff; border: 1px solid #eee6d3; border-left: 5px solid var(--gold); border-radius: 14px; padding: 16px 20px; }
+.my-order p { margin: 8px 0 0; white-space: pre-wrap; }
+.my-order .muted { color: var(--muted); font-size: .9rem; }
+.mo-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.mo-badge { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; padding: 4px 10px; border-radius: 999px; background: #ffe9a6; }
+.st-confirmada .mo-badge { background: #cfe0ff; } .st-pronta .mo-badge, .st-entregue .mo-badge { background: #c8f0d6; } .st-cancelada .mo-badge { background: #eee; }
+.st-cancelada { opacity: .7; }

@@ -97,6 +97,12 @@ app.use(async (req, res, next) => {
   res.locals.title = null;
   res.locals.description = null;
   res.locals.isAdmin = false;
+  res.locals.me = req.session && req.session.adminId
+    ? { admin: true, name: 'Admin' }
+    : req.session && req.session.userId
+    ? { admin: false, name: req.session.userName || 'Cliente' }
+    : null;
+  if (res.locals.me) res.locals.csrf = req.session.csrf || (req.session.csrf = crypto.randomBytes(24).toString('hex'));
   next();
 });
 
@@ -177,12 +183,15 @@ app.get('/contacto', (req, res) => {
 
 const KINDS = ['Bolo de aniversário', 'Bolo de batizado', 'Bolo de casamento', 'Tortas e sobremesas', 'Salgados e festa', 'Outro'];
 
-app.get('/encomendar', (req, res) => {
+app.get('/encomendar', async (req, res) => {
   res.render('encomendar', {
     title: 'Encomendar · Luar de Prata',
     description: 'Encomende bolos, tortas e salgados à Pastelaria Luar de Prata, direto por WhatsApp.',
     kinds: KINDS,
-    form: { kind: req.query.tipo && KINDS.includes(req.query.tipo) ? req.query.tipo : KINDS[0] },
+    form: {
+      kind: req.query.tipo && KINDS.includes(req.query.tipo) ? req.query.tipo : KINDS[0],
+      ...(await prefillFromUser(req)),
+    },
     errors: [],
     minDate: todayISO(),
   });
@@ -219,8 +228,8 @@ app.post('/encomendar', limit(8, 3600_000), async (req, res) => {
   }
 
   const { rows } = await pool.query(
-    'INSERT INTO orders (name, phone, kind, pickup_date, pickup_time, details) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
-    [form.name, form.phone, form.kind, form.pickup_date, form.pickup_time, form.details]
+    'INSERT INTO orders (name, phone, kind, pickup_date, pickup_time, details, user_id) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id',
+    [form.name, form.phone, form.kind, form.pickup_date, form.pickup_time, form.details, req.session.userId || null]
   );
   const id = rows[0].id;
   const [y, m, d] = form.pickup_date.split('-');
@@ -269,6 +278,108 @@ app.get('/sitemap.xml', (req, res) => {
   );
 });
 
+// ---------- Contas (clientes + admin com o mesmo login) ----------
+async function prefillFromUser(req) {
+  if (!req.session.userId) return {};
+  const { rows } = await pool.query('SELECT name, phone FROM users WHERE id = $1', [req.session.userId]);
+  return rows.length ? { name: rows[0].name, phone: rows[0].phone } : {};
+}
+
+const safeNext = (n) => (typeof n === 'string' && /^\/[a-zA-Z0-9/_-]*$/.test(n) && !n.startsWith('//') ? n : null);
+
+function startSession(req, data, done) {
+  req.session.regenerate((err) => {
+    if (err) throw err;
+    Object.assign(req.session, data, { csrf: crypto.randomBytes(24).toString('hex') });
+    req.session.save(done);
+  });
+}
+
+app.get('/entrar', (req, res) => {
+  if (req.session.adminId) return res.redirect('/admin');
+  if (req.session.userId) return res.redirect('/conta');
+  res.render('entrar', { title: 'Entrar · Luar de Prata', description: null, error: null, email: '', next: safeNext(req.query.next) || '' });
+});
+
+app.post('/entrar', limit(10, 600_000), async (req, res) => {
+  const email = String(req.body.email || '').trim().toLowerCase().slice(0, 120);
+  const password = String(req.body.password || '');
+  const next = safeNext(req.body.next);
+  const fail = () =>
+    res.status(401).render('entrar', {
+      title: 'Entrar · Luar de Prata',
+      description: null,
+      error: 'Email ou palavra-passe incorretos.',
+      email,
+      next: next || '',
+    });
+
+  // 1) administrador
+  const a = await pool.query('SELECT id, password_hash FROM admins WHERE email = $1', [email]);
+  if (a.rows.length) {
+    if (!(await bcrypt.compare(password, a.rows[0].password_hash))) return fail();
+    return startSession(req, { adminId: a.rows[0].id }, () => res.redirect(next && next.startsWith('/admin') ? next : '/admin'));
+  }
+  // 2) cliente
+  const u = await pool.query('SELECT id, name, password_hash FROM users WHERE email = $1', [email]);
+  if (!u.rows.length || !(await bcrypt.compare(password, u.rows[0].password_hash))) return fail();
+  startSession(req, { userId: u.rows[0].id, userName: u.rows[0].name.split(' ')[0] }, () => res.redirect(next && !next.startsWith('/admin') ? next : '/conta'));
+});
+
+app.get('/registar', (req, res) => {
+  if (req.session.adminId) return res.redirect('/admin');
+  if (req.session.userId) return res.redirect('/conta');
+  res.render('registar', { title: 'Criar conta · Luar de Prata', description: null, errors: [], form: {} });
+});
+
+app.post('/registar', limit(6, 3600_000), async (req, res) => {
+  const b = req.body || {};
+  if (b.website) return res.redirect('/registar');
+  const form = {
+    name: String(b.name || '').trim().slice(0, 80),
+    email: String(b.email || '').trim().toLowerCase().slice(0, 120),
+    phone: String(b.phone || '').replace(/[^\d+]/g, '').slice(0, 20),
+  };
+  const password = String(b.password || '');
+  const errors = [];
+  if (form.name.length < 2) errors.push('Indique o seu nome.');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email)) errors.push('Indique um email válido.');
+  if (form.phone && form.phone.replace(/\D/g, '').length < 9) errors.push('O telemóvel deve ter pelo menos 9 dígitos (ou deixe em branco).');
+  if (password.length < 8) errors.push('A palavra-passe deve ter pelo menos 8 caracteres.');
+  if (password !== String(b.confirm || '')) errors.push('As palavras-passe não coincidem.');
+  if (!errors.length) {
+    const taken =
+      (await pool.query('SELECT 1 FROM users WHERE email = $1', [form.email])).rows.length ||
+      (await pool.query('SELECT 1 FROM admins WHERE email = $1', [form.email])).rows.length;
+    if (taken) errors.push('Já existe uma conta com esse email. Experimente entrar.');
+  }
+  if (errors.length) return res.status(400).render('registar', { title: 'Criar conta · Luar de Prata', description: null, errors, form });
+  const { rows } = await pool.query(
+    'INSERT INTO users (name, email, phone, password_hash) VALUES ($1,$2,$3,$4) RETURNING id',
+    [form.name, form.email, form.phone, await bcrypt.hash(password, 12)]
+  );
+  startSession(req, { userId: rows[0].id, userName: form.name.split(' ')[0] }, () => res.redirect('/conta?novo=1'));
+});
+
+app.get('/conta', async (req, res) => {
+  if (req.session.adminId) return res.redirect('/admin');
+  if (!req.session.userId) return res.redirect('/entrar?next=/conta');
+  const u = await pool.query('SELECT name, email, phone FROM users WHERE id = $1', [req.session.userId]);
+  if (!u.rows.length) return req.session.destroy(() => res.redirect('/entrar'));
+  const { rows } = await pool.query(
+    `SELECT id, kind, status, details, to_char(pickup_date, 'DD/MM/YYYY') AS pickup_fmt, pickup_time
+     FROM orders WHERE user_id = $1 ORDER BY id DESC LIMIT 50`,
+    [req.session.userId]
+  );
+  res.render('conta', { title: 'A minha conta · Luar de Prata', description: null, user: u.rows[0], orders: rows, welcome: req.query.novo === '1' });
+});
+
+app.post('/sair', (req, res) => {
+  const token = req.body && req.body._csrf;
+  if (!req.session.csrf || token !== req.session.csrf) return res.redirect('/');
+  req.session.destroy(() => res.redirect('/'));
+});
+
 // ---------- Admin ----------
 const csrfCheck = (req, res, next) => {
   const token = (req.body && req.body._csrf) || req.query._csrf;
@@ -276,7 +387,7 @@ const csrfCheck = (req, res, next) => {
   next();
 };
 const requireAdmin = (req, res, next) => {
-  if (!req.session.adminId) return res.redirect('/admin/login');
+  if (!req.session.adminId) return res.redirect('/entrar?next=/admin');
   res.locals.isAdmin = true;
   res.locals.csrf = req.session.csrf || (req.session.csrf = crypto.randomBytes(24).toString('hex'));
   next();
@@ -287,25 +398,7 @@ const upload = multer({
   fileFilter: (req, file, cb) => cb(null, /^image\/(jpeg|png|webp|heic|heif)$/.test(file.mimetype)),
 });
 
-app.get('/admin/login', (req, res) => {
-  if (req.session.adminId) return res.redirect('/admin');
-  res.render('admin/login', { title: 'Entrar', error: null });
-});
-
-app.post('/admin/login', limit(10, 600_000), async (req, res) => {
-  const email = String(req.body.email || '').trim().toLowerCase();
-  const password = String(req.body.password || '');
-  const { rows } = await pool.query('SELECT * FROM admins WHERE email = $1', [email]);
-  const ok = rows.length && (await bcrypt.compare(password, rows[0].password_hash));
-  if (!ok) return res.status(401).render('admin/login', { title: 'Entrar', error: 'Email ou palavra-passe incorretos.' });
-  const adminId = rows[0].id;
-  req.session.regenerate((err) => {
-    if (err) throw err;
-    req.session.adminId = adminId;
-    req.session.csrf = crypto.randomBytes(24).toString('hex');
-    req.session.save(() => res.redirect('/admin'));
-  });
-});
+app.get('/admin/login', (req, res) => res.redirect('/entrar?next=/admin'));
 
 app.use('/admin', requireAdmin);
 
@@ -343,6 +436,15 @@ app.post('/admin/encomendas/:id/estado', csrfCheck, async (req, res) => {
 app.post('/admin/encomendas/:id/apagar', csrfCheck, async (req, res) => {
   await pool.query('DELETE FROM orders WHERE id = $1', [req.params.id]);
   res.redirect('/admin');
+});
+
+app.get('/admin/clientes', async (req, res) => {
+  const { rows } = await pool.query(
+    `SELECT u.id, u.name, u.email, u.phone, to_char(u.created_at AT TIME ZONE 'Europe/Lisbon', 'DD/MM/YYYY') AS created_fmt,
+            (SELECT COUNT(*)::int FROM orders o WHERE o.user_id = u.id) AS orders
+     FROM users u ORDER BY u.id DESC LIMIT 500`
+  );
+  res.render('admin/clientes', { title: 'Clientes', tab: 'clientes', users: rows });
 });
 
 app.get('/admin/ementa', async (req, res) => {

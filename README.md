@@ -24,3 +24,8 @@ Se esqueceres a palavra-passe: define `ADMIN_RESET_PASSWORD=1` + nova `ADMIN_PAS
 ## Notas
 - Horário, preços e produtos de exemplo são **placeholders**: confirmar com a pastelaria.
 - Sem email de aviso de novas encomendas (sem Brevo por agora): o dono vê no admin e confirma por WhatsApp.
+
+## Contas e login
+- `/entrar` é o login único: o email do admin (ADMIN_EMAIL) vai direto para `/admin`; clientes vão para `/conta`.
+- `/registar` cria conta de cliente (guarda nome/telemóvel e as encomendas ficam associadas). Encomendar continua a funcionar sem conta.
+- `/admin/clientes` lista as contas criadas.

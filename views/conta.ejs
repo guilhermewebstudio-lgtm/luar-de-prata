@@ -1,0 +1,44 @@
+<%- include('partials/head') %>
+
+<section class="page-hero">
+  <div class="stars" aria-hidden="true"><i class="s1"></i><i class="s2"></i></div>
+  <div class="container">
+    <p class="eyebrow">A minha conta</p>
+    <h1>Olá, <%= user.name.split(' ')[0] %></h1>
+    <p class="lead">Veja os seus pedidos e encomende em dois toques.</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C 300 70 520 0 760 28 C 1000 56 1200 10 1440 34 L1440 60 L0 60 Z" fill="var(--cream)"/></svg>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+    <% if (welcome) { %><div class="notice-ok">Conta criada com sucesso. Bem-vindo(a)! 🌙</div><% } %>
+    <div class="acc-card reveal">
+      <div>
+        <strong><%= user.name %></strong>
+        <div class="muted"><%= user.email %><%= user.phone ? ' · ' + user.phone : '' %></div>
+      </div>
+      <div class="acc-actions">
+        <a class="btn btn-gold" href="/encomendar">Nova encomenda</a>
+        <form method="post" action="/sair"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn btn-ghost-dark" type="submit">Sair</button></form>
+      </div>
+    </div>
+
+    <h2 class="reveal">As minhas encomendas</h2>
+    <% if (!orders.length) { %>
+      <p class="empty">Ainda não fez nenhuma encomenda com esta conta. <a class="link" href="/encomendar">Faça a primeira</a>.</p>
+    <% } else { %>
+      <ul class="my-orders">
+        <% orders.forEach(function (o) { %>
+        <li class="my-order st-<%= o.status %>">
+          <div class="mo-top"><strong>#<%= o.id %> · <%= o.kind %></strong><span class="mo-badge"><%= o.status %></span></div>
+          <div class="muted">Para <%= o.pickup_fmt %><%= o.pickup_time ? ' às ' + o.pickup_time : '' %></div>
+          <p><%= o.details %></p>
+        </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/foot') %>

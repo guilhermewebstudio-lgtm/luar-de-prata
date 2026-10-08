@@ -11,7 +11,11 @@
       <a href="/encomendar" class="<%= path.indexOf('/encomendar') === 0 ? 'active' : '' %>">Encomendar</a>
       <a href="/sobre" class="<%= path === '/sobre' ? 'active' : '' %>">Sobre</a>
       <a href="/contacto" class="<%= path === '/contacto' ? 'active' : '' %>">Contactos</a>
-      <% if (s.facebook) { %><a class="fb-btn" href="<%= s.facebook %>" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><%- include('icon-fb') %><span class="fb-label">Facebook</span></a><% } %>
+      <% if (me) { %>
+      <a class="nav-account on" href="<%= me.admin ? '/admin' : '/conta' %>"><%- include('icon-user') %> <%= me.admin ? 'Painel admin' : 'Olá, ' + me.name %></a>
+      <% } else { %>
+      <a class="nav-account" href="/entrar"><%- include('icon-user') %> Entrar</a>
+      <% } %>
       <a class="btn btn-wa btn-sm nav-cta" href="<%= waLink('Olá! Queria fazer uma encomenda, por favor.') %>" target="_blank" rel="noopener">
         <%- include('icon-wa') %> WhatsApp
       </a>

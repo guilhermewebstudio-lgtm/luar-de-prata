@@ -1,0 +1,48 @@
+<%- include('partials/head') %>
+
+<section class="page-hero">
+  <div class="stars" aria-hidden="true"><i class="s1"></i><i class="s2"></i></div>
+  <div class="container">
+    <p class="eyebrow">Grátis e rápido</p>
+    <h1>Criar conta</h1>
+    <p class="lead">Guarde os seus dados e acompanhe as suas encomendas.</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C 300 70 520 0 760 28 C 1000 56 1200 10 1440 34 L1440 60 L0 60 Z" fill="var(--cream)"/></svg>
+</section>
+
+<section class="section">
+  <div class="container auth-wrap">
+    <form class="form-card reveal" method="post" action="/registar" novalidate>
+      <% if (errors.length) { %>
+      <div class="alert" role="alert"><ul><% errors.forEach(function (e) { %><li><%= e %></li><% }) %></ul></div>
+      <% } %>
+      <div class="field">
+        <label for="name">O seu nome</label>
+        <input id="name" name="name" type="text" required maxlength="80" autocomplete="name" value="<%= form.name || '' %>">
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required maxlength="120" autocomplete="email" value="<%= form.email || '' %>">
+      </div>
+      <div class="field">
+        <label for="phone">Telemóvel (opcional)</label>
+        <input id="phone" name="phone" type="tel" maxlength="20" autocomplete="tel" inputmode="tel" placeholder="9XX XXX XXX" value="<%= form.phone || '' %>">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="password">Palavra-passe</label>
+          <input id="password" name="password" type="password" required minlength="8" autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label for="confirm">Repetir</label>
+          <input id="confirm" name="confirm" type="password" required minlength="8" autocomplete="new-password">
+        </div>
+      </div>
+      <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn btn-gold btn-block" type="submit">Criar conta</button>
+      <p class="fine">Já tem conta? <a class="link" href="/entrar">Entrar</a></p>
+    </form>
+  </div>
+</section>
+
+<%- include('partials/foot') %>

@@ -1,0 +1,32 @@
+<%- include('partials/head') %>
+
+<section class="page-hero">
+  <div class="stars" aria-hidden="true"><i class="s1"></i><i class="s2"></i></div>
+  <div class="container">
+    <p class="eyebrow">A sua área</p>
+    <h1>Entrar</h1>
+    <p class="lead">Clientes e equipa entram aqui. Quem faz parte da pastelaria vai direto para o painel de gestão.</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C 300 70 520 0 760 28 C 1000 56 1200 10 1440 34 L1440 60 L0 60 Z" fill="var(--cream)"/></svg>
+</section>
+
+<section class="section">
+  <div class="container auth-wrap">
+    <form class="form-card reveal" method="post" action="/entrar" novalidate>
+      <% if (error) { %><div class="alert" role="alert"><%= error %></div><% } %>
+      <input type="hidden" name="next" value="<%= next %>">
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required maxlength="120" autocomplete="username" value="<%= email %>" autofocus>
+      </div>
+      <div class="field">
+        <label for="password">Palavra-passe</label>
+        <input id="password" name="password" type="password" required autocomplete="current-password">
+      </div>
+      <button class="btn btn-gold btn-block" type="submit">Entrar</button>
+      <p class="fine">Ainda não tem conta? <a class="link" href="/registar">Criar conta</a></p>
+    </form>
+  </div>
+</section>
+
+<%- include('partials/foot') %>
