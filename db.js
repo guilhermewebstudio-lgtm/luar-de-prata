@@ -127,6 +127,30 @@ async function init() {
       "INSERT INTO gallery (title, category, image_url, featured, sort) VALUES ('Tortas de ovo gratinadas', 'Doces', '/img/tortas-de-ovo.jpg', true, 0)"
     );
   }
+
+  // Migração única: fotos reais da pastelaria (não volta a inserir se o dono apagar)
+  const { rows: flag } = await pool.query("SELECT 1 FROM settings WHERE key = 'seed_gallery_v1'");
+  if (flag.length === 0) {
+    const photos = [
+      // título, categoria, ficheiro, destaque
+      ['Corações de Dia da Mãe', 'Dia da Mãe', 'coracoes-dia-da-mae', true],
+      ['Bolas de Berlim', 'Doces', 'bolas-de-berlim', true],
+      ['Bolo coração com fios de ovos', 'Dia da Mãe', 'coracao-fios-de-ovos', true],
+      ['Bolo coração red velvet', 'Dia da Mãe', 'coracao-red-velvet', true],
+      ['Bolo coração de chocolate', 'Dia da Mãe', 'coracao-chocolate', true],
+      ['Tortas recheadas', 'Doces', 'tortas-recheadas', true],
+      ['Bolo de chocolate', 'Bolos', 'bolo-chocolate', false],
+      ['Bolo com cobertura de frutos secos', 'Bolos', 'bolo-frutos-secos', false],
+    ];
+    let i = 1;
+    for (const [title, category, file, featured] of photos) {
+      await pool.query(
+        'INSERT INTO gallery (title, category, image_url, featured, sort) VALUES ($1,$2,$3,$4,$5)',
+        [title, category, `/img/galeria/${file}.jpg`, featured, i++]
+      );
+    }
+    await pool.query("INSERT INTO settings (key, value) VALUES ('seed_gallery_v1', '1')");
+  }
 }
 
 async function getSettings() {
