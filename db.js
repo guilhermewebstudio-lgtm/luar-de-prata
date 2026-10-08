@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS = {
   address: 'Rua Capitão Salgueiro Maia n.º 7A, Pontinha',
   hours: 'Segunda a Sábado: 07:00 – 20:00\nDomingo: 07:00 – 13:00',
   hours_short: 'Todos os dias, de manhã à tarde',
-  facebook: 'https://www.facebook.com/search/top?q=Pastelaria%20LUAR%20De%20PRATA%20-%20Pontinha',
+  facebook: 'https://www.facebook.com/profile.php?id=100026830967482',
   instagram: '',
   promo_title: 'Promoção do fim de semana',
   promo_text: 'Tortas de ovo gratinadas!',
@@ -94,6 +94,12 @@ async function init() {
       [key, value]
     );
   }
+
+  // Troca o antigo link de pesquisa pelo link real da página (só se ainda não foi alterado no admin)
+  await pool.query(
+    "UPDATE settings SET value = $1 WHERE key = 'facebook' AND value LIKE 'https://www.facebook.com/search/top%'",
+    [DEFAULT_SETTINGS.facebook]
+  );
 
   const { rows: m } = await pool.query('SELECT COUNT(*)::int AS n FROM menu_items');
   if (m[0].n === 0) {
