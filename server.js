@@ -85,8 +85,11 @@ const todayISO = () => new Date().toLocaleDateString('en-CA', { timeZone: TZ });
 const waNumber = (s) => String(s.whatsapp || '').replace(/\D/g, '');
 const waLink = (s, text) => bot.waUrl(s, text);
 
+const BUILD = process.env.RENDER_GIT_COMMIT ? process.env.RENDER_GIT_COMMIT.slice(0, 8) : String(Date.now());
+
 app.use(async (req, res, next) => {
   const s = await loadSettings();
+  res.locals.v = BUILD;
   res.locals.s = s;
   res.locals.money = money;
   res.locals.waLink = (text) => waLink(s, text);

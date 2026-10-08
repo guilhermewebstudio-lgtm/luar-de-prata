@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/admin.css?v=1">
+  <link rel="stylesheet" href="/css/admin.css?v=<%= v %>">
 </head>
 <body>
 <% if (isAdmin) { %>
@@ -24,7 +24,7 @@
       <a href="/admin/definicoes" class="<%= tab === 'definicoes' ? 'on' : '' %>">Definições</a>
     </nav>
     <div class="top-right">
-      <a href="/" target="_blank" rel="noopener" class="ghost">Ver site ↗</a>
+      <a href="/" class="ghost">← Ver site</a>
       <form method="post" action="/admin/logout"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="ghost" type="submit">Sair</button></form>
     </div>
   </div>
