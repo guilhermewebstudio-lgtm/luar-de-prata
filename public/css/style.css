@@ -375,16 +375,19 @@ html:not(.js) .reveal { opacity: 1; transform: none; }
 }
 
 /* Facebook flutuante (por cima do WhatsApp) */
-.fb-fab { position: fixed; right: 20px; bottom: 88px; z-index: 60; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; background: #1877f2; color: #fff; text-decoration: none; box-shadow: 0 10px 26px rgba(24, 119, 242, .5); animation: fbFloat 3.4s ease-in-out infinite; }
-.fb-fab::before, .fb-fab::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(24, 119, 242, .55); animation: fbRing 2.6s ease-out infinite; pointer-events: none; }
-.fb-fab::after { animation-delay: 1.3s; }
-.fb-fab .ico { width: 26px; height: 26px; transition: transform .3s; }
-.fb-fab:hover { background: #0f63d1; }
-.fb-fab:hover .ico { transform: rotate(-12deg) scale(1.15); }
-@keyframes fbFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-@keyframes fbRing { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(1.7); opacity: 0; } }
+.fb-fab { position: fixed; right: 20px; bottom: 96px; z-index: 60; width: 72px; height: 72px; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(145deg, #3b8bff, #1259d6); color: #fff; text-decoration: none; border: 3px solid rgba(255, 255, 255, .9); box-shadow: 0 0 0 0 rgba(24, 119, 242, .6), 0 14px 34px rgba(24, 119, 242, .65); animation: fbFloat 3s ease-in-out infinite, fbWiggle 6s ease-in-out infinite; }
+.fb-fab::before, .fb-fab::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 3px solid rgba(59, 139, 255, .75); animation: fbRing 2.2s ease-out infinite; pointer-events: none; }
+.fb-fab::after { animation-delay: 1.1s; }
+.fb-fab .ico { width: 40px; height: 40px; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .25)); transition: transform .3s; }
+.fb-fab:hover { background: linear-gradient(145deg, #1877f2, #0b49b3); }
+.fb-fab:hover .ico { transform: scale(1.18) rotate(-10deg); }
+.fb-fab span { position: absolute; right: calc(100% + 12px); top: 50%; transform: translateY(-50%) translateX(8px); opacity: 0; background: #fff; color: #1259d6; font-weight: 800; font-size: .9rem; padding: 8px 14px; border-radius: 999px; white-space: nowrap; box-shadow: 0 6px 18px rgba(0, 0, 0, .2); pointer-events: none; transition: opacity .25s, transform .25s; }
+.fb-fab:hover span, .fb-fab:focus-visible span { opacity: 1; transform: translateY(-50%); }
+@keyframes fbFloat { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+@keyframes fbWiggle { 0%, 82%, 100% { rotate: 0deg; } 86% { rotate: -14deg; } 90% { rotate: 12deg; } 94% { rotate: -8deg; } 97% { rotate: 4deg; } }
+@keyframes fbRing { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(1.8); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .fb-fab, .fb-fab::before, .fb-fab::after { animation: none; } }
-@media (max-width: 560px) { .fb-fab { width: 48px; height: 48px; right: 22px; bottom: 84px; } }
+@media (max-width: 560px) { .fb-fab { width: 62px; height: 62px; right: 18px; bottom: 90px; } .fb-fab .ico { width: 34px; height: 34px; } .fb-fab span { display: none; } }
 
 .foot-fb { display: inline-flex; align-items: center; gap: 8px; }
 .foot-fb .ico { width: 16px; height: 16px; flex: none; color: #6aa5ff; }
