@@ -12,7 +12,18 @@
       <a href="/sobre" class="<%= path === '/sobre' ? 'active' : '' %>">Sobre</a>
       <a href="/contacto" class="<%= path === '/contacto' ? 'active' : '' %>">Contactos</a>
       <% if (me) { %>
-      <a class="nav-account on" href="<%= me.admin ? '/admin' : '/conta' %>"><%- include('icon-user') %> <%= me.admin ? 'Painel admin' : 'Olá, ' + me.name %></a>
+      <div class="acct" id="acct">
+        <button class="nav-account on" type="button" id="acctBtn" aria-haspopup="true" aria-expanded="false"><%- include('icon-user') %> <%= me.admin ? 'Admin' : 'Olá, ' + me.name %> <span class="caret" aria-hidden="true">▾</span></button>
+        <div class="acct-menu" id="acctMenu">
+          <% if (me.admin) { %>
+          <a href="/admin">Painel admin</a>
+          <% } else { %>
+          <a href="/conta">A minha conta</a>
+          <a href="/encomendar">Nova encomenda</a>
+          <% } %>
+          <form method="post" action="/sair"><input type="hidden" name="_csrf" value="<%= csrf %>"><button type="submit" class="acct-out">Sair</button></form>
+        </div>
+      </div>
       <% } else { %>
       <a class="nav-account" href="/entrar"><%- include('icon-user') %> Entrar</a>
       <% } %>

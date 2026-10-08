@@ -51,6 +51,21 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+  // ----- Menu da conta -----
+  var acct = document.getElementById('acct');
+  var acctBtn = document.getElementById('acctBtn');
+  if (acct && acctBtn) {
+    acctBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = acct.classList.toggle('open');
+      acctBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (e) {
+      if (!acct.contains(e.target)) { acct.classList.remove('open'); acctBtn.setAttribute('aria-expanded', 'false'); }
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { acct.classList.remove('open'); acctBtn.setAttribute('aria-expanded', 'false'); } });
+  }
+
   if (burger && nav) {
     burger.addEventListener('click', function () {
       var open = nav.classList.toggle('open');
