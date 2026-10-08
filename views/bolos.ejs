@@ -1,0 +1,55 @@
+<%- include('partials/head') %>
+
+<section class="page-hero">
+  <div class="stars" aria-hidden="true"><i class="s1"></i><i class="s2"></i></div>
+  <div class="container">
+    <p class="eyebrow">Feitos à medida</p>
+    <h1>Bolos &amp; doces</h1>
+    <p class="lead">Aniversários, batizados, casamentos e tudo o que merece ser celebrado.</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C 300 70 520 0 760 28 C 1000 56 1200 10 1440 34 L1440 60 L0 60 Z" fill="var(--cream)"/></svg>
+</section>
+
+<section class="section">
+  <div class="container">
+    <% if (cats.length > 1) { %>
+    <div class="filters" id="filters" role="tablist">
+      <button class="chip active" data-cat="*">Todos</button>
+      <% cats.forEach(function (c) { %><button class="chip" data-cat="<%= c %>"><%= c %></button><% }) %>
+    </div>
+    <% } %>
+
+    <% if (gallery.length) { %>
+    <div class="gallery" id="gallery">
+      <% gallery.forEach(function (g, idx) { %>
+      <figure class="g-item reveal" data-cat="<%= g.category %>" style="--d: <%= Math.min(idx, 8) * 50 %>ms">
+        <button class="g-btn" data-full="<%= g.image_url %>" data-cap="<%= g.title || g.category %>" aria-label="Ampliar: <%= g.title || g.category %>">
+          <img src="<%= g.image_url %>" alt="<%= g.title || g.category %>" loading="lazy">
+        </button>
+        <figcaption><%= g.title || g.category %><small><%= g.category %></small></figcaption>
+      </figure>
+      <% }) %>
+    </div>
+    <% } else { %>
+    <p class="empty">Estamos a preparar a galeria. Entretanto, fale connosco para ver o que podemos fazer por si.</p>
+    <% } %>
+
+    <div class="cta-band reveal">
+      <div>
+        <h2>Tem uma ideia em mente?</h2>
+        <p>Diga-nos a data, o número de pessoas e o estilo. Nós tratamos do resto. <%= s.order_notice %></p>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-wa" href="<%= waLink('Olá! Queria encomendar um bolo, por favor.') %>" target="_blank" rel="noopener"><%- include('partials/icon-wa') %> Pedir no WhatsApp</a>
+        <a class="btn btn-ghost" href="/encomendar">Preencher pedido</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lb-close" aria-label="Fechar">×</button>
+  <figure><img src="" alt=""><figcaption></figcaption></figure>
+</div>
+
+<%- include('partials/foot') %>

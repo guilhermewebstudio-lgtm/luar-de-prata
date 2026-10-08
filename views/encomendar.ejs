@@ -1,0 +1,70 @@
+<%- include('partials/head') %>
+
+<section class="page-hero">
+  <div class="stars" aria-hidden="true"><i class="s1"></i><i class="s2"></i></div>
+  <div class="container">
+    <p class="eyebrow">Sem filas, sem espera</p>
+    <h1>Encomendar</h1>
+    <p class="lead">Escolha o que quer, diga-nos quando precisa e confirmamos tudo consigo.</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C 300 70 520 0 760 28 C 1000 56 1200 10 1440 34 L1440 60 L0 60 Z" fill="var(--cream)"/></svg>
+</section>
+
+<section class="section">
+  <div class="container order-grid">
+    <form class="form-card reveal" method="post" action="/encomendar" novalidate>
+      <% if (errors.length) { %>
+      <div class="alert" role="alert"><strong>Falta só um pormenor:</strong><ul><% errors.forEach(function (e) { %><li><%= e %></li><% }) %></ul></div>
+      <% } %>
+      <div class="field">
+        <label for="name">O seu nome</label>
+        <input id="name" name="name" type="text" required maxlength="80" autocomplete="name" value="<%= form.name || '' %>">
+      </div>
+      <div class="field">
+        <label for="phone">Telemóvel</label>
+        <input id="phone" name="phone" type="tel" required maxlength="20" autocomplete="tel" inputmode="tel" placeholder="9XX XXX XXX" value="<%= form.phone || '' %>">
+      </div>
+      <div class="field">
+        <label for="kind">O que pretende?</label>
+        <select id="kind" name="kind">
+          <% kinds.forEach(function (k) { %><option value="<%= k %>" <%= form.kind === k ? 'selected' : '' %>><%= k %></option><% }) %>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="pickup_date">Data de levantamento</label>
+          <input id="pickup_date" name="pickup_date" type="date" min="<%= minDate %>" required value="<%= form.pickup_date || '' %>">
+        </div>
+        <div class="field">
+          <label for="pickup_time">Hora (opcional)</label>
+          <input id="pickup_time" name="pickup_time" type="time" value="<%= form.pickup_time || '' %>">
+        </div>
+      </div>
+      <div class="field">
+        <label for="details">Detalhes do pedido</label>
+        <textarea id="details" name="details" rows="5" required maxlength="1500" placeholder="Sabor, tamanho ou nº de pessoas, tema, dedicatória, alergias…"><%= form.details || '' %></textarea>
+      </div>
+      <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn btn-gold btn-block" type="submit">Enviar pedido</button>
+      <p class="fine">Depois de enviar, abrimos o WhatsApp para confirmar tudo com a pastelaria.</p>
+    </form>
+
+    <aside class="side reveal">
+      <div class="side-card">
+        <h3>Prefere falar já?</h3>
+        <p>Envie-nos uma mensagem e respondemos o mais depressa possível.</p>
+        <a class="btn btn-wa btn-block" href="<%= waLink('Olá! Queria fazer uma encomenda, por favor.') %>" target="_blank" rel="noopener"><%- include('partials/icon-wa') %> Abrir WhatsApp</a>
+      </div>
+      <div class="side-card soft">
+        <h3>Bom saber</h3>
+        <ul class="ticks">
+          <li><%= s.order_notice %></li>
+          <li>Confirmamos sempre o pedido, o preço e a hora consigo.</li>
+          <li>Alergias ou intolerâncias? Diga-nos nos detalhes.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<%- include('partials/foot') %>

@@ -1,0 +1,15 @@
+<%- include('partials/head') %>
+
+<section class="section ok-wrap">
+  <div class="container narrow center">
+    <div class="ok-moon reveal" aria-hidden="true"><img src="/img/logo-96.png" alt="" width="96" height="96"></div>
+    <h1 class="reveal">Obrigado, <%= name.split(' ')[0] %>!</h1>
+    <p class="lead reveal">O seu pedido <strong>n.º <%= id %></strong> foi registado. Falta só um passo: confirme connosco no WhatsApp para fecharmos preço e hora.</p>
+    <p class="reveal">
+      <a class="btn btn-wa btn-lg" href="<%= waHref %>" target="_blank" rel="noopener"><%- include('partials/icon-wa') %> Confirmar no WhatsApp</a>
+    </p>
+    <p class="reveal"><a class="link" href="/">Voltar ao início</a></p>
+  </div>
+</section>
+
+<%- include('partials/foot') %>

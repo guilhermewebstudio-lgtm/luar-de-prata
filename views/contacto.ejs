@@ -1,0 +1,35 @@
+<%- include('partials/head') %>
+
+<section class="page-hero">
+  <div class="stars" aria-hidden="true"><i class="s1"></i><i class="s2"></i></div>
+  <div class="container">
+    <p class="eyebrow">Venha ver-nos</p>
+    <h1>Contactos</h1>
+    <p class="lead">Estamos na Pontinha, com a porta sempre aberta.</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C 300 70 520 0 760 28 C 1000 56 1200 10 1440 34 L1440 60 L0 60 Z" fill="var(--cream)"/></svg>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="info-card reveal">
+      <h3>Onde estamos</h3>
+      <p class="info-row"><span>📍</span><span><%= s.address %></span></p>
+      <h3 style="margin-top:28px">Horário</h3>
+      <p class="info-row"><span>🕒</span><span class="pre"><%= s.hours %></span></p>
+      <h3 style="margin-top:28px">Fale connosco</h3>
+      <p class="info-row"><span>💬</span><a href="<%= waLink('Olá! Gostava de falar com a Pastelaria Luar de Prata.') %>" target="_blank" rel="noopener">WhatsApp</a></p>
+      <% if (s.phone) { %><p class="info-row"><span>📞</span><a href="tel:<%= s.phone.replace(/\s/g, '') %>"><%= s.phone %></a></p><% } %>
+      <p class="info-row"><span>✉️</span><a href="mailto:<%= s.email %>"><%= s.email %></a></p>
+      <% if (s.facebook) { %><p class="info-row"><span>👍</span><a href="<%= s.facebook %>" target="_blank" rel="noopener">Facebook</a></p><% } %>
+      <% if (s.instagram) { %><p class="info-row"><span>📸</span><a href="<%= s.instagram %>" target="_blank" rel="noopener">Instagram</a></p><% } %>
+      <p style="margin-top:28px"><a class="btn btn-wa" href="<%= waLink('Olá!') %>" target="_blank" rel="noopener"><%- include('partials/icon-wa') %> Falar no WhatsApp</a></p>
+    </div>
+    <div class="reveal">
+      <iframe class="map map-lg" title="Mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=<%= encodeURIComponent(s.address + ', Portugal') %>&output=embed"></iframe>
+      <p class="center"><a class="btn btn-ghost-dark" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=<%= encodeURIComponent(s.address + ', Portugal') %>">Abrir no Google Maps</a></p>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/foot') %>

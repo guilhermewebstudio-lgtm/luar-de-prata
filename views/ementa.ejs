@@ -1,0 +1,62 @@
+<%- include('partials/head') %>
+
+<section class="page-hero">
+  <div class="stars" aria-hidden="true"><i class="s1"></i><i class="s2"></i></div>
+  <div class="container">
+    <p class="eyebrow">Hoje no balcão</p>
+    <h1>Ementa do dia</h1>
+    <p class="lead cap"><%= todayLabel %></p>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C 300 70 520 0 760 28 C 1000 56 1200 10 1440 34 L1440 60 L0 60 Z" fill="var(--cream)"/></svg>
+</section>
+
+<section class="section">
+  <div class="container">
+    <% if (s.promo_active === '1' && s.promo_text) { %>
+    <div class="promo-card reveal">
+      <span class="promo-star">✦</span>
+      <div><strong><%= s.promo_title %></strong><p><%= s.promo_text %></p></div>
+      <a class="btn btn-wa btn-sm" href="<%= waLink('Olá! Queria aproveitar a promoção: ' + s.promo_text) %>" target="_blank" rel="noopener">Quero!</a>
+    </div>
+    <% } %>
+
+    <header class="section-head left reveal"><h2>Hoje temos</h2></header>
+    <% if (today.length) { %>
+    <div class="cards">
+      <% today.forEach(function (i, idx) { %>
+      <article class="dish reveal" style="--d: <%= idx * 50 %>ms">
+        <span class="tag"><%= i.category %></span>
+        <h3><%= i.name %></h3>
+        <% if (i.description) { %><p><%= i.description %></p><% } %>
+        <% if (i.price != null) { %><span class="price"><%= money(i.price) %></span><% } %>
+      </article>
+      <% }) %>
+    </div>
+    <% } else { %>
+    <p class="empty">A ementa de hoje ainda não foi atualizada. Veja a montra completa em baixo.</p>
+    <% } %>
+
+    <header class="section-head left reveal" style="margin-top:72px"><h2>Montra completa</h2><p class="muted">Disponibilidade sujeita a variação ao longo do dia.</p></header>
+    <div class="menu-board">
+      <% groups.forEach(function (g) { %>
+      <section class="menu-group reveal">
+        <h3><%= g[0] %></h3>
+        <ul>
+          <% g[1].forEach(function (i) { %>
+          <li>
+            <div class="mi-top"><span class="mi-name"><%= i.name %></span><span class="mi-dots"></span><span class="mi-price"><%= i.price != null ? money(i.price) : '' %></span></div>
+            <% if (i.description) { %><p><%= i.description %></p><% } %>
+          </li>
+          <% }) %>
+        </ul>
+      </section>
+      <% }) %>
+    </div>
+
+    <p class="center reveal" style="margin-top:56px">
+      <a class="btn btn-wa" href="<%= waLink('Olá! Queria encomendar da ementa de hoje, por favor.') %>" target="_blank" rel="noopener"><%- include('partials/icon-wa') %> Encomendar no WhatsApp</a>
+    </p>
+  </div>
+</section>
+
+<%- include('partials/foot') %>

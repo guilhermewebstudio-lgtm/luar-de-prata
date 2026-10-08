@@ -1,0 +1,43 @@
+<%- include('_head') %>
+<main class="wrap page">
+  <div class="page-head"><h1>Galeria de bolos</h1></div>
+  <% if (saved) { %><div class="ok">Guardado ✓</div><% } %>
+  <% if (error) { %><div class="alert"><%= error %></div><% } %>
+
+  <form class="card add" method="post" action="/admin/galeria?_csrf=<%= csrf %>" enctype="multipart/form-data">
+    <h2>Adicionar fotos</h2>
+    <p class="muted">Pode escolher várias de uma vez. As fotos são reduzidas e otimizadas automaticamente.</p>
+    <div class="row">
+      <label class="grow">Fotos<input type="file" name="images" accept="image/*" multiple required></label>
+      <label>Categoria
+        <select name="category"><option>Aniversário</option><option>Batizado</option><option>Casamento</option><option>Doces</option><option>Bolos</option></select>
+      </label>
+    </div>
+    <div class="row">
+      <label class="grow">Título (só se for uma foto)<input name="title" maxlength="80" placeholder="Ex.: Bolo de batizado, tema ursinho"></label>
+      <button class="btn" type="submit">Enviar</button>
+    </div>
+  </form>
+
+  <div class="grid">
+    <% gallery.forEach(function (g) { %>
+    <article class="card gitem">
+      <img src="<%= g.image_url %>" alt="" loading="lazy">
+      <form method="post" action="/admin/galeria/<%= g.id %>">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <input name="title" value="<%= g.title %>" placeholder="Título" maxlength="80">
+        <select name="category">
+          <% ['Aniversário', 'Batizado', 'Casamento', 'Doces', 'Bolos'].concat(['Aniversário', 'Batizado', 'Casamento', 'Doces', 'Bolos'].indexOf(g.category) === -1 ? [g.category] : []).forEach(function (c) { %><option <%= c === g.category ? 'selected' : '' %>><%= c %></option><% }) %>
+        </select>
+        <label class="check"><input type="checkbox" name="featured" <%= g.featured ? 'checked' : '' %>> Destaque na página inicial</label>
+        <button class="btn sm" type="submit">Guardar</button>
+      </form>
+      <form method="post" action="/admin/galeria/<%= g.id %>/apagar" onsubmit="return confirm('Apagar esta foto?')">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <button class="btn danger sm" type="submit">Apagar</button>
+      </form>
+    </article>
+    <% }) %>
+  </div>
+</main>
+</body></html>

@@ -1,0 +1,124 @@
+<%- include('partials/head') %>
+
+<section class="hero">
+  <div class="stars" aria-hidden="true"><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow reveal">Pastelaria · Arte e Sabor · Pontinha</p>
+      <h1 class="reveal">O sabor que <em>brilha</em> à luz da lua</h1>
+      <p class="lead reveal">Pão quente, bolos de festa e doces feitos com carinho. Veja a ementa de hoje e encomende em segundos, direto pelo WhatsApp.</p>
+      <div class="cta-row reveal">
+        <a class="btn btn-wa" href="<%= waLink('Olá! Queria fazer uma encomenda, por favor.') %>" target="_blank" rel="noopener"><%- include('partials/icon-wa') %> Encomendar no WhatsApp</a>
+        <a class="btn btn-ghost" href="/ementa">Ver ementa de hoje</a>
+      </div>
+      <ul class="hero-facts reveal">
+        <li><strong>2024</strong><span>Fundada na Pontinha</span></li>
+        <li><strong>1,5 mil</strong><span>Seguidores no Facebook</span></li>
+        <li><strong>À medida</strong><span>Bolos por encomenda</span></li>
+      </ul>
+    </div>
+    <div class="hero-art reveal" aria-hidden="true">
+      <div class="moon-glow"></div>
+      <img class="seal" src="/img/logo.png" alt="" width="460" height="460">
+      <span class="spark sp1">✦</span><span class="spark sp2">✦</span><span class="spark sp3">✦</span>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C 240 90 480 0 720 36 C 960 72 1200 10 1440 44 L1440 80 L0 80 Z" fill="var(--cream)"/></svg>
+</section>
+
+<% if (s.promo_active === '1' && s.promo_text) { %>
+<div class="marquee" aria-label="Promoção">
+  <div class="marquee-track">
+    <% for (let k = 0; k < 8; k++) { %><span>✦ <b><%= s.promo_title %>:</b> <%= s.promo_text %></span><% } %>
+  </div>
+</div>
+<% } %>
+
+<section class="section">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow dark">Hoje no balcão</p>
+      <h2>Ementa do dia</h2>
+      <p class="muted cap"><%= todayLabel %></p>
+    </header>
+    <% if (items.length) { %>
+    <div class="cards">
+      <% items.forEach(function (i, idx) { %>
+      <article class="dish reveal" style="--d: <%= idx * 70 %>ms">
+        <span class="tag"><%= i.category %></span>
+        <h3><%= i.name %></h3>
+        <% if (i.description) { %><p><%= i.description %></p><% } %>
+        <% if (i.price != null) { %><span class="price"><%= money(i.price) %></span><% } %>
+      </article>
+      <% }) %>
+    </div>
+    <% } else { %>
+    <p class="empty reveal">A ementa de hoje ainda está a ser preparada. Passe pela pastelaria ou pergunte-nos no WhatsApp o que há fresquinho.</p>
+    <% } %>
+    <p class="center reveal"><a class="btn btn-gold" href="/ementa">Ver ementa completa</a></p>
+  </div>
+</section>
+
+<section class="section section-night how">
+  <div class="stars" aria-hidden="true"><i class="s1"></i><i class="s2"></i></div>
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow">Sem complicações</p>
+      <h2>Encomendar é fácil</h2>
+    </header>
+    <ol class="steps">
+      <li class="reveal" style="--d:0ms"><span class="step-n">1</span><h3>Escolha</h3><p>Veja a ementa do dia e a galeria de bolos. Aniversário, batizado, casamento, ou só uma caixa de pastéis.</p></li>
+      <li class="reveal" style="--d:90ms"><span class="step-n">2</span><h3>Fale connosco</h3><p>Toque no botão e envie-nos o pedido pelo WhatsApp, com a data e o que imagina.</p></li>
+      <li class="reveal" style="--d:180ms"><span class="step-n">3</span><h3>Levante e celebre</h3><p>Confirmamos tudo consigo e o seu bolo fica pronto à hora combinada na Pontinha.</p></li>
+    </ol>
+    <p class="center reveal">
+      <a class="btn btn-wa" href="<%= waLink('Olá! Queria fazer uma encomenda, por favor.') %>" target="_blank" rel="noopener"><%- include('partials/icon-wa') %> Encomendar no WhatsApp</a>
+      <a class="btn btn-ghost" href="/encomendar">Prefiro preencher o pedido</a>
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <header class="section-head reveal">
+      <p class="eyebrow dark">Feitos com carinho</p>
+      <h2>Bolos &amp; doces</h2>
+    </header>
+    <div class="tiles">
+      <% gallery.forEach(function (g, idx) { %>
+      <a class="tile reveal" href="/bolos" style="--d: <%= idx * 70 %>ms">
+        <img src="<%= g.image_url %>" alt="<%= g.title || g.category %>" loading="lazy">
+        <span class="tile-cap"><%= g.title || g.category %></span>
+      </a>
+      <% }) %>
+      <% if (gallery.length < 3) { %>
+      <a class="tile tile-more reveal" href="/encomendar">
+        <span>✦</span>
+        <strong>O seu bolo aqui</strong>
+        <em>Peça um bolo à medida</em>
+      </a>
+      <% } %>
+    </div>
+    <p class="center reveal"><a class="btn btn-gold" href="/bolos">Ver todos</a></p>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container split">
+    <div class="reveal">
+      <p class="eyebrow dark">A nossa casa</p>
+      <h2>Uma pastelaria de bairro, com arte e sabor</h2>
+      <p class="pre-wrap"><%= s.about %></p>
+      <a class="btn btn-ghost-dark" href="/sobre">Conhecer a pastelaria</a>
+    </div>
+    <div class="info-card reveal">
+      <h3>Visite-nos</h3>
+      <p class="info-row"><span>📍</span><span><%= s.address %></span></p>
+      <p class="info-row"><span>🕒</span><span class="pre"><%= s.hours %></span></p>
+      <p class="info-row"><span>💬</span><a href="<%= waLink('Olá!') %>" target="_blank" rel="noopener">Falar no WhatsApp</a></p>
+      <iframe class="map" title="Mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=<%= encodeURIComponent(s.address + ', Portugal') %>&output=embed"></iframe>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/foot') %>

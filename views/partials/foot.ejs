@@ -1,0 +1,67 @@
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <img src="/img/logo-96.png" alt="" width="64" height="64" class="footer-logo">
+      <p class="footer-claim">Pastelaria Arte e Sabor.<br>Fundada em 2024, na Pontinha.</p>
+    </div>
+    <div>
+      <h4>Visite-nos</h4>
+      <p><%= s.address %></p>
+      <p class="pre"><%= s.hours %></p>
+    </div>
+    <div>
+      <h4>Fale connosco</h4>
+      <p><a href="<%= waLink('Olá! Gostava de falar com a Pastelaria Luar de Prata.') %>" target="_blank" rel="noopener">WhatsApp</a></p>
+      <% if (s.phone) { %><p><a href="tel:<%= s.phone.replace(/\s/g, '') %>"><%= s.phone %></a></p><% } %>
+      <p><a href="mailto:<%= s.email %>"><%= s.email %></a></p>
+      <% if (s.facebook) { %><p><a href="<%= s.facebook %>" target="_blank" rel="noopener">Facebook</a></p><% } %>
+      <% if (s.instagram) { %><p><a href="<%= s.instagram %>" target="_blank" rel="noopener">Instagram</a></p><% } %>
+    </div>
+    <div>
+      <h4>Navegar</h4>
+      <p><a href="/ementa">Ementa do dia</a></p>
+      <p><a href="/bolos">Bolos e doces</a></p>
+      <p><a href="/encomendar">Encomendar</a></p>
+      <p><a href="/sobre">Sobre nós</a></p>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© <%= year %> Pastelaria Luar de Prata</span>
+    <a href="/admin/login" class="footer-admin">Área reservada</a>
+  </div>
+</footer>
+
+<a class="wa-fab" href="<%= waLink('Olá! Queria fazer uma encomenda, por favor.') %>" target="_blank" rel="noopener" aria-label="Encomendar pelo WhatsApp">
+  <%- include('icon-wa') %><span>Encomendar</span>
+</a>
+
+<!-- Assistente -->
+<div class="bot" id="bot">
+  <button class="bot-toggle" id="botToggle" aria-label="Abrir assistente" aria-expanded="false">
+    <img src="/img/logo-96.png" alt="" width="52" height="52">
+    <span class="bot-badge" id="botBadge">1</span>
+  </button>
+  <section class="bot-panel" id="botPanel" role="dialog" aria-label="Assistente Luar de Prata" hidden>
+    <header class="bot-head">
+      <img src="/img/logo-96.png" alt="" width="40" height="40">
+      <div>
+        <strong>Assistente Luar de Prata</strong>
+        <small><i class="dot"></i> Responde na hora</small>
+      </div>
+      <button class="bot-close" id="botClose" aria-label="Fechar">×</button>
+    </header>
+    <div class="bot-msgs" id="botMsgs" aria-live="polite"></div>
+    <div class="bot-chips" id="botChips"></div>
+    <form class="bot-form" id="botForm" autocomplete="off">
+      <input id="botInput" type="text" maxlength="300" placeholder="Escreva a sua pergunta…" aria-label="Mensagem">
+      <button type="submit" aria-label="Enviar">➤</button>
+    </form>
+  </section>
+</div>
+
+<script src="/js/main.js?v=1" defer></script>
+<script src="/js/bot.js?v=1" defer></script>
+</body>
+</html>

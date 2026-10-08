@@ -1,0 +1,12 @@
+<%- include('partials/head') %>
+
+<section class="section ok-wrap">
+  <div class="container narrow center">
+    <div class="ok-moon" aria-hidden="true"><img src="/img/logo-96.png" alt="" width="96" height="96"></div>
+    <h1><%= typeof serverError !== 'undefined' && serverError ? 'Ups, algo correu mal' : 'Esta página fugiu para a lua' %></h1>
+    <p class="lead"><%= typeof serverError !== 'undefined' && serverError ? 'Tente outra vez dentro de instantes.' : 'Não encontrámos o que procura, mas a ementa está à sua espera.' %></p>
+    <p><a class="btn btn-gold" href="/">Voltar ao início</a> <a class="btn btn-ghost-dark" href="/ementa">Ver ementa</a></p>
+  </div>
+</section>
+
+<%- include('partials/foot') %>

@@ -1,0 +1,49 @@
+<%- include('_head') %>
+<main class="wrap page">
+  <div class="page-head">
+    <h1>Encomendas</h1>
+    <div class="pills">
+      <a class="pill <%= !status ? 'on' : '' %>" href="/admin">Todas</a>
+      <% statuses.forEach(function (st) { %>
+      <a class="pill <%= status === st ? 'on' : '' %>" href="/admin?estado=<%= st %>"><%= st %><% if (counts[st]) { %> <b><%= counts[st] %></b><% } %></a>
+      <% }) %>
+    </div>
+  </div>
+
+  <% if (!orders.length) { %>
+  <div class="card empty">Ainda não há encomendas <%= status ? 'com o estado «' + status + '»' : '' %>. Quando alguém preencher o pedido no site, aparece aqui.</div>
+  <% } %>
+
+  <div class="orders">
+    <% orders.forEach(function (o) { %>
+    <article class="card order st-<%= o.status %>">
+      <header>
+        <div>
+          <strong>#<%= o.id %> · <%= o.name %></strong>
+          <span class="muted">recebida a <%= o.created_fmt %></span>
+        </div>
+        <span class="badge st-<%= o.status %>"><%= o.status %></span>
+      </header>
+      <dl>
+        <div><dt>Tipo</dt><dd><%= o.kind %></dd></div>
+        <div><dt>Levantamento</dt><dd><%= o.pickup_fmt || '—' %><%= o.pickup_time ? ' às ' + o.pickup_time : '' %></dd></div>
+        <div><dt>Telemóvel</dt><dd><a href="tel:<%= o.phone %>"><%= o.phone %></a> · <a target="_blank" rel="noopener" href="https://wa.me/<%= o.phone.replace(/\D/g, '').length === 9 ? '351' + o.phone.replace(/\D/g, '') : o.phone.replace(/\D/g, '') %>">WhatsApp</a></dd></div>
+      </dl>
+      <p class="details"><%= o.details %></p>
+      <footer>
+        <form method="post" action="/admin/encomendas/<%= o.id %>/estado" class="inline">
+          <input type="hidden" name="_csrf" value="<%= csrf %>">
+          <select name="status" onchange="this.form.submit()">
+            <% statuses.forEach(function (st) { %><option value="<%= st %>" <%= st === o.status ? 'selected' : '' %>><%= st %></option><% }) %>
+          </select>
+        </form>
+        <form method="post" action="/admin/encomendas/<%= o.id %>/apagar" onsubmit="return confirm('Apagar esta encomenda?')">
+          <input type="hidden" name="_csrf" value="<%= csrf %>">
+          <button class="btn danger sm" type="submit">Apagar</button>
+        </form>
+      </footer>
+    </article>
+    <% }) %>
+  </div>
+</main>
+</body></html>

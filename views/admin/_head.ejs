@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title><%= title %> · Admin Luar de Prata</title>
+  <link rel="icon" href="/img/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/admin.css?v=1">
+</head>
+<body>
+<% if (isAdmin) { %>
+<header class="top">
+  <div class="wrap top-in">
+    <a class="logo" href="/admin"><img src="/img/logo-96.png" alt="" width="36" height="36"><span>Luar de Prata <small>admin</small></span></a>
+    <nav>
+      <a href="/admin" class="<%= tab === 'encomendas' ? 'on' : '' %>">Encomendas</a>
+      <a href="/admin/ementa" class="<%= tab === 'ementa' ? 'on' : '' %>">Ementa</a>
+      <a href="/admin/galeria" class="<%= tab === 'galeria' ? 'on' : '' %>">Galeria</a>
+      <a href="/admin/definicoes" class="<%= tab === 'definicoes' ? 'on' : '' %>">Definições</a>
+    </nav>
+    <div class="top-right">
+      <a href="/" target="_blank" rel="noopener" class="ghost">Ver site ↗</a>
+      <form method="post" action="/admin/logout"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="ghost" type="submit">Sair</button></form>
+    </div>
+  </div>
+</header>
+<% } %>

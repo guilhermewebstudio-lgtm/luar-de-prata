@@ -1,0 +1,53 @@
+<%- include('_head') %>
+<main class="wrap page">
+  <div class="page-head">
+    <h1>Ementa</h1>
+    <form method="post" action="/admin/ementa/limpar-hoje" onsubmit="return confirm('Tirar todos os produtos da ementa do dia?')">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <button class="btn ghost-b" type="submit">Limpar ementa de hoje</button>
+    </form>
+  </div>
+  <% if (saved) { %><div class="ok">Guardado ✓</div><% } %>
+  <p class="muted">Marque <b>Hoje</b> nos produtos que estão disponíveis hoje: aparecem na página inicial, na ementa e no bot. <b>Disponível</b> controla se aparece na montra completa.</p>
+
+  <form class="card add" method="post" action="/admin/ementa/novo">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <h2>Novo produto</h2>
+    <div class="row">
+      <label class="grow">Nome<input name="name" required maxlength="80"></label>
+      <label class="w-price">Preço (€)<input name="price" inputmode="decimal" placeholder="1,20"></label>
+      <label>Categoria
+        <select name="category"><% categories.forEach(function (c) { %><option><%= c %></option><% }) %></select>
+      </label>
+    </div>
+    <div class="row">
+      <label class="grow">Descrição (opcional)<input name="description" maxlength="200"></label>
+      <label class="check"><input type="checkbox" name="today" checked> Hoje</label>
+      <button class="btn" type="submit">Adicionar</button>
+    </div>
+  </form>
+
+  <div class="table card">
+    <div class="trow thead"><span>Nome / descrição</span><span>Preço €</span><span>Categoria</span><span>Hoje</span><span>Disp.</span><span></span></div>
+    <% items.forEach(function (i) { %>
+    <div class="trow">
+      <form id="f<%= i.id %>" method="post" action="/admin/ementa/<%= i.id %>" class="cells">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <span class="c-name"><input name="name" value="<%= i.name %>" maxlength="80" required><input name="description" value="<%= i.description %>" maxlength="200" placeholder="Descrição" class="sub"></span>
+        <span><input name="price" inputmode="decimal" value="<%= i.price != null ? String(Number(i.price).toFixed(2)).replace('.', ',') : '' %>"></span>
+        <span><select name="category">
+          <% categories.concat(categories.indexOf(i.category) === -1 ? [i.category] : []).forEach(function (c) { %><option <%= c === i.category ? 'selected' : '' %>><%= c %></option><% }) %>
+        </select></span>
+        <span class="c-check"><input type="checkbox" name="today" <%= i.today ? 'checked' : '' %>></span>
+        <span class="c-check"><input type="checkbox" name="available" <%= i.available ? 'checked' : '' %>></span>
+        <span class="c-act"><button class="btn sm" type="submit">Guardar</button></span>
+      </form>
+      <form method="post" action="/admin/ementa/<%= i.id %>/apagar" onsubmit="return confirm('Apagar «<%= i.name.replace(/'/g, '') %>»?')" class="del">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <button class="x" type="submit" aria-label="Apagar">×</button>
+      </form>
+    </div>
+    <% }) %>
+  </div>
+</main>
+</body></html>

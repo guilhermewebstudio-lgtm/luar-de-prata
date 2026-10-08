@@ -1,0 +1,20 @@
+<header class="site-header" id="siteHeader">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Luar de Prata, início">
+      <img src="/img/logo-96.png" alt="" width="44" height="44">
+      <span class="brand-text"><strong>Luar de Prata</strong><small>Pastelaria · Pontinha</small></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Principal">
+      <a href="/" class="<%= path === '/' ? 'active' : '' %>">Início</a>
+      <a href="/ementa" class="<%= path === '/ementa' ? 'active' : '' %>">Ementa</a>
+      <a href="/bolos" class="<%= path === '/bolos' ? 'active' : '' %>">Bolos</a>
+      <a href="/encomendar" class="<%= path.indexOf('/encomendar') === 0 ? 'active' : '' %>">Encomendar</a>
+      <a href="/sobre" class="<%= path === '/sobre' ? 'active' : '' %>">Sobre</a>
+      <a href="/contacto" class="<%= path === '/contacto' ? 'active' : '' %>">Contactos</a>
+      <a class="btn btn-wa btn-sm nav-cta" href="<%= waLink('Olá! Queria fazer uma encomenda, por favor.') %>" target="_blank" rel="noopener">
+        <%- include('icon-wa') %> WhatsApp
+      </a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
+  </div>
+</header>

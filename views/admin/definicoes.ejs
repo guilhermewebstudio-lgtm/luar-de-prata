@@ -1,0 +1,42 @@
+<%- include('_head') %>
+<main class="wrap page narrow">
+  <div class="page-head"><h1>Definições</h1></div>
+  <% if (saved) { %><div class="ok">Guardado ✓</div><% } %>
+
+  <form class="card add" method="post" action="/admin/definicoes">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <h2>Contactos</h2>
+    <label>WhatsApp (com indicativo, só números)<input name="whatsapp" value="<%= s.whatsapp %>" inputmode="numeric" placeholder="351912345678"></label>
+    <p class="hint">É para este número que vão todos os botões «Encomendar no WhatsApp». Sem número, abre o WhatsApp sem destinatário.</p>
+    <label>Telefone (opcional)<input name="phone" value="<%= s.phone %>"></label>
+    <label>Email<input name="email" type="email" value="<%= s.email %>"></label>
+    <label>Morada<input name="address" value="<%= s.address %>"></label>
+    <label>Facebook (link)<input name="facebook" value="<%= s.facebook %>"></label>
+    <label>Instagram (link, opcional)<input name="instagram" value="<%= s.instagram %>"></label>
+
+    <h2>Horário</h2>
+    <label>Horário (uma linha por dia ou intervalo)<textarea name="hours" rows="3"><%= s.hours %></textarea></label>
+    <label>Horário curto (opcional)<input name="hours_short" value="<%= s.hours_short %>"></label>
+
+    <h2>Promoção</h2>
+    <label class="check"><input type="checkbox" name="promo_active" <%= s.promo_active === '1' ? 'checked' : '' %>> Mostrar faixa de promoção</label>
+    <label>Título<input name="promo_title" value="<%= s.promo_title %>"></label>
+    <label>Texto<input name="promo_text" value="<%= s.promo_text %>"></label>
+
+    <h2>Textos</h2>
+    <label>Aviso nas encomendas<input name="order_notice" value="<%= s.order_notice %>"></label>
+    <label>Sobre a pastelaria<textarea name="about" rows="5"><%= s.about %></textarea></label>
+    <button class="btn" type="submit">Guardar definições</button>
+  </form>
+
+  <form class="card add" method="post" action="/admin/password">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <h2>Mudar palavra-passe</h2>
+    <% if (pwMsg) { %><div class="ok"><%= pwMsg %></div><% } %>
+    <label>Atual<input type="password" name="current" autocomplete="current-password" required></label>
+    <label>Nova (mín. 8 caracteres)<input type="password" name="next" autocomplete="new-password" minlength="8" required></label>
+    <label>Repetir nova<input type="password" name="confirm" autocomplete="new-password" minlength="8" required></label>
+    <button class="btn" type="submit">Alterar</button>
+  </form>
+</main>
+</body></html>

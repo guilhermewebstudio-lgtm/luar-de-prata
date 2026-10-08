@@ -1,0 +1,36 @@
+<%- include('partials/head') %>
+
+<section class="page-hero">
+  <div class="stars" aria-hidden="true"><i class="s1"></i><i class="s2"></i></div>
+  <div class="container">
+    <p class="eyebrow">Fundada em 2024</p>
+    <h1>Sobre nós</h1>
+    <p class="lead">Pastelaria Arte e Sabor, no coração da Pontinha.</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C 300 70 520 0 760 28 C 1000 56 1200 10 1440 34 L1440 60 L0 60 Z" fill="var(--cream)"/></svg>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="reveal">
+      <h2>A lua, o pão e o carinho</h2>
+      <p class="pre-wrap"><%= s.about %></p>
+      <p>O nome vem da lua que vemos ao fechar o forno e abrir a porta: a hora em que tudo está pronto para quem chega. Aqui o objetivo é simples, que saia daqui com um sorriso e com algo bom na mão.</p>
+    </div>
+    <div class="seal-card reveal"><img src="/img/logo.png" alt="Selo da Pastelaria Luar de Prata" width="360" height="360" loading="lazy"></div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container">
+    <header class="section-head reveal"><h2>O que nos move</h2></header>
+    <div class="values">
+      <div class="value reveal"><span>✦</span><h3>Todos os dias</h3><p>Ementa do dia atualizada, para saber sempre o que há fresquinho.</p></div>
+      <div class="value reveal" style="--d:80ms"><span>✦</span><h3>À sua medida</h3><p>Bolos de aniversário, batizado e casamento, feitos de acordo com o seu pedido.</p></div>
+      <div class="value reveal" style="--d:160ms"><span>✦</span><h3>De bairro</h3><p>Conhecemos quem cá vem. Uma conversa simples e um atendimento próximo.</p></div>
+    </div>
+    <p class="center reveal" style="margin-top:48px"><a class="btn btn-gold" href="/encomendar">Fazer uma encomenda</a></p>
+  </div>
+</section>
+
+<%- include('partials/foot') %>
