@@ -432,3 +432,9 @@ button.nav-account:hover, .acct.open button.nav-account { color: #fff; border-co
   .acct-out { color: #ff9b90; }
   .acct-menu form { border-color: rgba(255, 255, 255, .15); }
 }
+
+/* Mostrar palavra-passe */
+.pw-wrap { position: relative; display: block; }
+.pw-wrap input { padding-right: 76px; }
+.pw-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: 0; cursor: pointer; font: inherit; font-size: .8rem; font-weight: 700; color: var(--gold-d); padding: 6px 9px; border-radius: 8px; }
+.pw-toggle:hover { background: rgba(0, 0, 0, .06); }

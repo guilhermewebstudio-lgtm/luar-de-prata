@@ -433,12 +433,59 @@ app.post('/admin/encomendas/:id/estado', csrfCheck, async (req, res) => {
   if (ORDER_STATUS.includes(req.body.status)) {
     await pool.query('UPDATE orders SET status = $1 WHERE id = $2', [req.body.status, req.params.id]);
   }
-  res.redirect(req.get('referer') || '/admin');
+  const back = String(req.body.back || '');
+  res.redirect(/^\/admin(\/[a-z]+)?(\?[\w=&%-]*)?$/.test(back) ? back : '/admin');
 });
 
 app.post('/admin/encomendas/:id/apagar', csrfCheck, async (req, res) => {
   await pool.query('DELETE FROM orders WHERE id = $1', [req.params.id]);
   res.redirect('/admin');
+});
+
+app.get('/admin/calendario', async (req, res) => {
+  const today = todayISO();
+  const m = /^(\d{4})-(\d{2})$/.test(req.query.mes || '') ? req.query.mes : today.slice(0, 7);
+  const [y, mo] = m.split('-').map(Number);
+  if (mo < 1 || mo > 12) return res.redirect('/admin/calendario');
+  const first = new Date(Date.UTC(y, mo - 1, 1));
+  const offset = (first.getUTCDay() + 6) % 7; // semana começa à segunda
+  const start = new Date(Date.UTC(y, mo - 1, 1 - offset));
+  const weeks = Math.ceil((offset + new Date(Date.UTC(y, mo, 0)).getUTCDate()) / 7);
+  const end = new Date(start.getTime() + weeks * 7 * 86400000 - 86400000);
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const { rows } = await pool.query(
+    `SELECT id, name, phone, kind, status, details, pickup_time, to_char(pickup_date, 'YYYY-MM-DD') AS day
+     FROM orders WHERE pickup_date BETWEEN $1 AND $2 ORDER BY pickup_date, pickup_time, id`,
+    [iso(start), iso(end)]
+  );
+  const byDay = {};
+  for (const o of rows) (byDay[o.day] = byDay[o.day] || []).push(o);
+  const days = [];
+  for (let i = 0; i < weeks * 7; i++) {
+    const d = new Date(start.getTime() + i * 86400000);
+    days.push({ date: iso(d), n: d.getUTCDate(), other: d.getUTCMonth() !== mo - 1, today: iso(d) === today, orders: byDay[iso(d)] || [] });
+  }
+  const shift = (n) => {
+    const d = new Date(Date.UTC(y, mo - 1 + n, 1));
+    return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0');
+  };
+  const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  const inMonth = rows.filter((o) => o.day.slice(0, 7) === m && o.status !== 'cancelada');
+  const sel = /^\d{4}-\d{2}-\d{2}$/.test(req.query.dia || '') ? req.query.dia : today.slice(0, 7) === m ? today : m + '-01';
+  res.render('admin/calendario', {
+    title: 'Calendário',
+    tab: 'calendario',
+    label: MONTHS[mo - 1] + ' ' + y,
+    prev: shift(-1),
+    next: shift(1),
+    isCurrent: today.slice(0, 7) === m,
+    days,
+    total: inMonth.length,
+    pending: inMonth.filter((o) => o.status === 'nova').length,
+    selected: sel,
+    statuses: ORDER_STATUS,
+    data: byDay,
+  });
 });
 
 app.get('/admin/clientes', async (req, res) => {

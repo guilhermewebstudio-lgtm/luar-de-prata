@@ -1,0 +1,39 @@
+<%- include('_head') %>
+<main class="wrap page">
+  <div class="page-head">
+    <h1>Calendário</h1>
+    <div class="cal-nav">
+      <a class="btn sm ghost-b" href="/admin/calendario?mes=<%= prev %>" aria-label="Mês anterior">‹</a>
+      <strong class="cal-title"><%= label %></strong>
+      <a class="btn sm ghost-b" href="/admin/calendario?mes=<%= next %>" aria-label="Mês seguinte">›</a>
+      <% if (!isCurrent) { %><a class="btn sm" href="/admin/calendario">Hoje</a><% } %>
+    </div>
+  </div>
+  <p class="muted cal-sum"><%= total %> encomenda<%= total === 1 ? '' : 's' %> neste mês<% if (pending) { %> · <b><%= pending %> por confirmar</b><% } %></p>
+
+  <div class="cal-layout">
+    <div class="card cal">
+      <div class="cal-head"><% ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].forEach(function (d) { %><span><%= d %></span><% }) %></div>
+      <div class="cal-grid">
+        <% days.forEach(function (d) { %>
+        <button type="button" class="cal-day <%= d.other ? 'other' : '' %> <%= d.today ? 'today' : '' %> <%= d.date === selected ? 'sel' : '' %>" data-date="<%= d.date %>">
+          <span class="num"><%= d.n %></span>
+          <% d.orders.slice(0, 3).forEach(function (o) { %>
+          <span class="chip st-<%= o.status %>"><%= o.pickup_time ? o.pickup_time + ' ' : '' %><%= o.name.split(' ')[0] %></span>
+          <% }) %>
+          <% if (d.orders.length > 3) { %><span class="more">+<%= d.orders.length - 3 %> mais</span><% } %>
+        </button>
+        <% }) %>
+      </div>
+      <div class="cal-legend">
+        <span><i class="st-nova"></i>Nova</span><span><i class="st-confirmada"></i>Confirmada</span><span><i class="st-pronta"></i>Pronta</span><span><i class="st-entregue"></i>Entregue</span><span><i class="st-cancelada"></i>Cancelada</span>
+      </div>
+    </div>
+
+    <aside class="card cal-panel" id="calPanel" aria-live="polite"></aside>
+  </div>
+</main>
+
+<script id="calData" type="application/json"><%- JSON.stringify({ orders: data, selected: selected, csrf: csrf, statuses: statuses }).replace(/</g, '\\u003c') %></script>
+<script src="/js/calendar.js?v=<%= v %>"></script>
+</body></html>
